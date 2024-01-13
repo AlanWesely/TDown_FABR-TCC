@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        {% include 'app_tdown/partials/head.html' %}
+        <title>{% block title %}{% endblock title %}Recipes</title>
+    </head>
+
+    <body>
+    {% include 'app_tdown/partials/header.html' %}
+    {% include 'app_tdown/partials/search.html' %}
+
+    <main class="main-content-container">
+        {% block content %}{% endblock content %}
+    </main>
+
+    {% include 'app_tdown/partials/footer.html' %}
+</body>
+
+</html>
