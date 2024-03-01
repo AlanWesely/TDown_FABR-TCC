@@ -24,10 +24,10 @@ class Liga(models.Model):
 
 class Partida(models.Model):
     timeCasa = models.ForeignKey(
-        Time, on_delete=models.SET_NULL, null=True
+        Time, related_name='partidas_casa', on_delete=models.SET_NULL, null=True
         )
     timeVisitante = models.ForeignKey(
-        Time, on_delete=models.SET_NULL, null=True
+        Time, related_name='partidas_visitante', on_delete=models.SET_NULL, null=True
         )
     dataPartida = models.DateField()
     horarioPartida = models.TimeField()
