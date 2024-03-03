@@ -5,6 +5,17 @@ from django.db import models
 class Modalidade(models.Model):
     tipoModalidade = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.tipoModalidade
+    
+
+class Federacoes(models.Model):
+    nomeAbrev = models.CharField(max_length=10)
+    nomeFederacao = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nomeAbrev
+
 
 class Time(models.Model):
     nomeEquipe = models.CharField(max_length=100)
@@ -13,16 +24,34 @@ class Time(models.Model):
     estado = models.CharField(max_length=2)
     modalidadeMasc = models.BooleanField(default=False)
     modalidadeFem = models.BooleanField(default=False)
-    logoTime = models.ImageField('app_tdown/logoTime/')
+    logoTime = models.ImageField(upload_to='app_tdown/covers/logoTime/')
+    
+    def __str__(self):
+        return self.nomeAbreviado
 
 
 class Liga(models.Model):
+    nomeAbrevLiga = models.CharField(max_length=10)
     nomeLiga = models.CharField(max_length=100)
-    federacao = models.CharField(max_length=100)
-    serieDivisao = models.CharField(max_length=300)
+    federacao = models.ForeignKey(
+        Federacoes, on_delete=models.SET_NULL, null=True
+    )
+
+    def __str__(self):
+        return self.nomeAbrevLiga
+
+class DivisoesCampeonatos(models.Model):
+    nomeEDivisao = models.CharField(max_length=100)
+    liga = models.ForeignKey(
+        Liga, on_delete=models.SET_NULL, null=True
+    )
+
+    def __str__(self):
+        return self.nomeEDivisao
 
 
 class Partida(models.Model):
+    nomePartida = models.CharField(max_length=300)
     timeCasa = models.ForeignKey(
         Time, related_name='partidas_casa', on_delete=models.SET_NULL, null=True
         )
@@ -35,10 +64,18 @@ class Partida(models.Model):
     numeroPartida = models.CharField(max_length=10)
     cidadePartida = models.CharField(max_length=150)
     estadoPartida = models.CharField(max_length=2)
+    divisoePartida = models.ForeignKey(
+        DivisoesCampeonatos, on_delete=models.SET_NULL, null=True
+    )
     ligaPartida = models.ForeignKey(
         Liga, on_delete=models.SET_NULL, null=True
     )
     modalidadePartida = models.ForeignKey(
         Modalidade, on_delete=models.SET_NULL, null=True
     )
+    logoPartida = models.ImageField(upload_to='app_tdown/covers/logoPartida/', blank=True, default='')
 
+
+
+    def __str__(self):
+        return self.nomePartida

@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from utils.games.factory import make_game
+from .models import Partida
 # Create your views here.
 
 
 def home(request):
+    partida = Partida.objects.all().order_by('-id')
     return render(request, 'app_tdown/pages/home.html', context={
-        'games': [make_game() for _ in range(10)],
+        'games': partida,
     })
 
 
