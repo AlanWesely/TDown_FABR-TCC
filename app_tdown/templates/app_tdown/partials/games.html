@@ -25,7 +25,7 @@
             {{game.dataPartida|date:"d/m/Y"}} às {{game.horarioPartida|date:"H:i"}}
         </span>
         <span class="recipe-author-item">
-            <a href="/recipes/category/cafe-da-manha/">
+            <a href={% url 'games:buscar-liga' game.divisoePartida.id%}>
                 <i class="fas fa-trophy"></i>
                 <span><!--SPFL - Série Diamante-->
                 {{game.divisoePartida}}</span>
