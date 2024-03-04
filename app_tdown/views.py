@@ -1,5 +1,5 @@
 from django.http import Http404
-from django.shortcuts import render, get_list_or_404
+from django.shortcuts import render, get_list_or_404, get_object_or_404
 from django.http import HttpResponse
 from utils.games.factory import make_game
 from .models import Partida
@@ -35,9 +35,12 @@ def cadPartida(request, id):
 
 
 def viewPartida(request, id):
+    partida = get_object_or_404(Partida, pk=id)
+
     return render(request, 'app_tdown/pages/viewPartida.html', context={
-        'game': make_game(),
+        'game': partida,
         'is_detail_page': True,
+        'title': f'{partida.nomePartida} - Partida'
     })  # Cadastro de Partida
 
 
