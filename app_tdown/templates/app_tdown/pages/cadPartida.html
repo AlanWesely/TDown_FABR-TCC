@@ -5,7 +5,35 @@
 
 {% block content %}
     <div class="main-content main-content-detail container">
-        {% include 'app_tdown/partials/games.html' %}
+        <h1>Formulário de Partida</h1>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="nomePartida">Nome da Partida:</label><br>
+                <input type="text" id="nomePartida" name="nomePartida"><br>
+
+                <label for="timeCasa">Time Casa:</label><br>
+                <select id="timeCasa" name="timeCasa">
+                    <option value="">Selecione o time casa</option>
+                    {% for time in times %}
+                        <option value="{{ time.id }}">{{ time.nome }}</option>
+                    {% endfor %}
+                </select><br>
+
+                <label for="timeVisitante">Time Visitante:</label><br>
+                <select id="timeVisitante" name="timeVisitante">
+                    <option value="">Selecione o time visitante</option>
+                    {% for time in times %}
+                        <option value="{{ time.id }}">{{ time.nome }}</option>
+                    {% endfor %}
+                </select><br>
+
+                <label for="dataPartida">Data da Partida:</label><br>
+                <input type="date" id="dataPartida" name="dataPartida"><br>
+
+                <!-- Adicione os outros campos do modelo aqui -->
+
+                <button type="submit">Enviar</button>
+            </form>
 
     </div>
 {% endblock content %}
