@@ -273,3 +273,86 @@
   .main-footer a:hover {
     filter: brightness(0.8);
   }
+
+/********************************************************************************************************************************************************
+
+/* Estilização dos inputs e selects */
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select,
+input[type="file"] {
+    background-color: transparent;
+    border: 1px solid #282727;
+    border-radius: 5px;
+    padding: 8px;
+    margin: 3px 0;
+    width: 100%;
+    transition: background-color 0.2s ease-in-out;
+    color: #000000; /* cor do texto, pode ajustar conforme o fundo */
+}
+
+/* Quando o campo estiver focado */
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+select:focus,
+input[type="file"]:focus {
+    background-color: white;
+    color: #000000;
+    outline: none;
+}
+
+/* Botão */
+button[type="submit"] {
+    background-color: #1d8282;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+    background-color: #156666;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.form-x {
+    padding: 0 10px;
+    font-weight: bold;
+    font-size: 18px;
+    color: white;
+}
+
+.form-group.small {
+    flex: 0 0 8%;
+    min-width: 60px;
+}
+
+.form-group.medium {
+    flex: 0 0 15%;
+    min-width: 100px;
+}
+
+.form-group.large {
+    flex: 0 0 25%;
+    min-width: 200px;
+}
+
+.form-group.flex-fill {
+    flex: 1;
+}

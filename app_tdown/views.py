@@ -1,8 +1,9 @@
 from django.http import Http404
-from django.shortcuts import render, get_list_or_404, get_object_or_404
+from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.http import HttpResponse
 from utils.games.factory import make_game
 from .models import Partida
+from .forms import PartidaForm
 # Create your views here.
 
 
@@ -28,10 +29,34 @@ def liga(request, liga_id):
 
 
 
-def cadPartida(request, id):
-    return render(request, 'app_tdown/pages/cadPartida.html', context={
-        'game': make_game(),
-    })  # Cadastro de Partida
+#def cadPartida(request, id):
+#    return render(request, 'app_tdown/pages/cadPartida.html', context={
+#        'game': make_game(),
+#    })  # Cadastro de Partida
+
+###########################################################################################################################################
+#CADASTRO FORMS PARTIDA
+###########################################################################################################################################
+def cadastrar_partida(request):
+    if request.method == 'POST':
+        form = PartidaForm(request.POST, request.FILES)
+        if form.is_valid():
+            partida = form.save(commit=False)
+
+            timeCasa = partida.timeCasa.nomeAbreviado
+            timeVisitante = partida.timeVisitante.nomeAbreviado
+            liga = partida.ligaPartida.nomeAbrevLiga
+            partida.nomePartida = f"{timeCasa} x {timeVisitante} - {liga}"
+
+            partida.save()
+            return render(request, 'app_tdown/pages/sucessoPartida.html', {'partida': partida})
+
+    else:
+        form = PartidaForm()
+
+    return render(request, 'app_tdown/pages/cadPartida.html', {'form': form})
+
+###########################################################################################################################################
 
 
 def viewPartida(request, id):

@@ -1,0 +1,19 @@
+{% extends "global/base.html" %}
+
+{% block title %}Cadastro Concluído | {% endblock title %}
+
+{% block content %}
+<div class="main-content main-content-detail container">
+    <h1 style="color: green;">Cadastro realizado com sucesso!</h1>
+
+    <p><strong>Partida:</strong> {{ game.nomePartida }}</p>
+    <p><strong>Data:</strong> {{ game.dataPartida|date:"d/m/Y" }}</p>
+    <p><strong>Horário:</strong> {{ game.horarioPartida|time:"H:i" }}</p>
+    <p><strong>Local:</strong> {{ game.ruaPartida }}, {{ game.numeroPartida }} - {{ game.cidadePartida }}/{{ game.estadoPartida }}</p>
+
+    <div style="margin-top: 20px;">
+        <a href="{% url 'games:cadastro_partida' %}" class="btn btn-primary">Novo Cadastro</a>
+        <a href="/" class="btn btn-secondary">Ir para a Home</a>
+    </div>
+</div>
+{% endblock content %}

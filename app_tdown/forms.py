@@ -1,7 +1,16 @@
 from django import forms
-from app_tdown.models import Partida
+from .models import Partida, Time, Liga, DivisoesCampeonatos, Modalidade
 
+class PartidaForm(forms.ModelForm):
+    timeCasa = forms.ModelChoiceField(queryset=Time.objects.all(), label="Time da Casa")
+    timeVisitante = forms.ModelChoiceField(queryset=Time.objects.all(), label="Time Visitante")
+    dataPartida = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), label="Data da Partida")
+    horarioPartida = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}), label="Horário da Partida")
+    divisoePartida = forms.ModelChoiceField(queryset=DivisoesCampeonatos.objects.all(), label="Divisão")
+    ligaPartida = forms.ModelChoiceField(queryset=Liga.objects.all(), label="Liga")
+    modalidadePartida = forms.ModelChoiceField(queryset=Modalidade.objects.all(), label="Modalidade")
+    logoPartida = forms.ImageField(label="Logo da Partida")
 
-
-class CadastroJogosForm(forms.models):
-  
+    class Meta:
+        model = Partida
+        exclude = ['nomePartida']

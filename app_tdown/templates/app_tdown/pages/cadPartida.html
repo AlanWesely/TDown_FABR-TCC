@@ -1,39 +1,78 @@
 {% extends "global/base.html" %}
-{% block title %}ALTERAR | {% endblock title %}
+{% load static %}
 
-
+{% block title %}Cadastrar Partida | {% endblock title %}
 
 {% block content %}
-    <div class="main-content main-content-detail container">
-        <h1>Formulário de Partida</h1>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <label for="nomePartida">Nome da Partida:</label><br>
-                <input type="text" id="nomePartida" name="nomePartida"><br>
+<div class="main-content main-content-detail container">
+    <h1>Cadastro de Partida</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-                <label for="timeCasa">Time Casa:</label><br>
-                <select id="timeCasa" name="timeCasa">
-                    <option value="">Selecione o time casa</option>
-                    {% for time in times %}
-                        <option value="{{ time.id }}">{{ time.nome }}</option>
-                    {% endfor %}
-                </select><br>
+        <!-- Linha: Time Casa - X - Time Visitante -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="timeCasa">Time da Casa:</label>
+                {{ form.timeCasa }}
+            </div>
+            <div class="form-x">X</div>
+            <div class="form-group">
+                <label for="timeVisitante">Time Visitante:</label>
+                {{ form.timeVisitante }}
+            </div>
+        </div>
 
-                <label for="timeVisitante">Time Visitante:</label><br>
-                <select id="timeVisitante" name="timeVisitante">
-                    <option value="">Selecione o time visitante</option>
-                    {% for time in times %}
-                        <option value="{{ time.id }}">{{ time.nome }}</option>
-                    {% endfor %}
-                </select><br>
+        <!-- Linha: Divisão - Liga - Modalidade -->
+        <div class="form-row">
+            <div class="form-group">
+                <label for="divisoePartida">Divisão:</label>
+                {{ form.divisoePartida }}
+            </div>
+            <div class="form-group">
+                <label for="ligaPartida">Liga:</label>
+                {{ form.ligaPartida }}
+            </div>
+            <div class="form-group">
+                <label for="modalidadePartida">Modalidade:</label>
+                {{ form.modalidadePartida }}
+            </div>
+        </div>
 
-                <label for="dataPartida">Data da Partida:</label><br>
-                <input type="date" id="dataPartida" name="dataPartida"><br>
+        <!-- Linha: Data - Horário - Rua - Número - Cidade - Estado -->
+        <div class="form-row">
+            <div class="form-group medium">
+                <label for="dataPartida">Data:</label>
+                {{ form.dataPartida }}
+            </div>
+            <div class="form-group small">
+                <label for="horarioPartida">Horário:</label>
+                {{ form.horarioPartida }}
+            </div>
+            <div class="form-group flex-fill">
+                <label for="ruaPartida">Rua:</label>
+                {{ form.ruaPartida }}
+            </div>
+            <div class="form-group small">
+                <label for="numeroPartida">Número:</label>
+                {{ form.numeroPartida }}
+            </div>
+            <div class="form-group large">
+                <label for="cidadePartida">Cidade:</label>
+                {{ form.cidadePartida }}
+            </div>
+            <div class="form-group small">
+                <label for="estadoPartida">Estado:</label>
+                {{ form.estadoPartida }}
+            </div>
+        </div>
 
-                <!-- Adicione os outros campos do modelo aqui -->
 
-                <button type="submit">Enviar</button>
-            </form>
+        <!-- Logo -->
+        <label for="logoPartida">Logo da Partida:</label>
+        {{ form.logoPartida }}
 
-    </div>
+        <!-- Botão -->
+        <button type="submit">Cadastrar Partida</button>
+    </form>
+</div>
 {% endblock content %}
