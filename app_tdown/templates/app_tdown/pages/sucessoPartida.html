@@ -6,10 +6,10 @@
 <div class="main-content main-content-detail container">
     <h1 style="color: green;">Cadastro realizado com sucesso!</h1>
 
-    <p><strong>Partida:</strong> {{ game.nomePartida }}</p>
-    <p><strong>Data:</strong> {{ game.dataPartida|date:"d/m/Y" }}</p>
+    <p><strong>Partida:</strong> {{ games.nomePartida }}</p>
+    <p><strong>Data:</strong> {{ games.dataPartida|date:"d/m/Y" }}</p>
     <p><strong>Horário:</strong> {{ game.horarioPartida|time:"H:i" }}</p>
-    <p><strong>Local:</strong> {{ game.ruaPartida }}, {{ game.numeroPartida }} - {{ game.cidadePartida }}/{{ game.estadoPartida }}</p>
+    <p><strong>Local:</strong> {{ games.ruaPartida }}, {{ games.numeroPartida }} - {{ games.cidadePartida }}/{{ games.estadoPartida }}</p>
 
     <div style="margin-top: 20px;">
         <a href="{% url 'games:cadastro_partida' %}" class="btn btn-primary">Novo Cadastro</a>

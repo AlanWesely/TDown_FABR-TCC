@@ -1,5 +1,5 @@
 from django import forms
-from .models import Partida, Time, Liga, DivisoesCampeonatos, Modalidade
+from .models import Partida, Time, Liga, DivisoesCampeonatos, Modalidade, Jogada
 
 class PartidaForm(forms.ModelForm):
     timeCasa = forms.ModelChoiceField(queryset=Time.objects.all(), label="Time da Casa")
@@ -14,3 +14,17 @@ class PartidaForm(forms.ModelForm):
     class Meta:
         model = Partida
         exclude = ['nomePartida']
+
+
+class JogadaForm(forms.ModelForm):
+    class Meta:
+        model = Jogada
+        fields = [
+            'partida',
+            'tempo',
+            'descida',
+            'timeAtacando',
+            'timeDefendendo',
+            'jardaFirst',
+            'posicaoBola',
+        ]

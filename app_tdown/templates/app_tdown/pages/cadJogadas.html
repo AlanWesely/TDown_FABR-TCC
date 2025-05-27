@@ -1,8 +1,186 @@
 {% extends "global/base.html" %}
-{% block title %}ALTERAR | {% endblock title %}
+{% load static %}
 
-
+{% block title %}Cadastro de Jogadas | {% endblock title %}
 
 {% block content %}
-    <h1>Cadastro de Jogadas</h1>
+<div class="main-content main-content-detail container">
+
+    <!-- INFORMAÇÕES DA PARTIDA -->
+    <h1 style="text-align: center;">
+        {{ partida.nomePartida }}
+    </h1>
+    <p style="text-align: center;">
+        Time da Casa: {{ partida.timeCasa.nomeEquipe }} x Time Visitante: {{ partida.timeVisitante.nomeEquipe }} — 
+        Data: {{ partida.dataPartida|date:"d/m/Y" }} às {{ partida.horarioPartida|time:"H:i" }} — 
+        {{ partida.cidadePartida }}/{{ partida.estadoPartida }}
+    </p>
+
+    <div style="display: flex; gap: 40px; margin-top: 30px;">
+        <!-- FORMULÁRIO (50%) -->
+        <div style="flex: 1;">
+            <form method="post">
+                {% csrf_token %}
+                <!-- TÍTULO CENTRALIZADO -->
+                <h3 style="text-align: center;">Cadastro de Jogadas</h3>
+                <br>
+                <!-- LINHA 1: Jogada, Tempo, Descida -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jogada">Jogada:</label>
+                        <input type="text" id="jogada" name="jogada" value="{{ proxima_jogada }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="tempo">Tempo:</label>
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <input type="text" id="tempo_visual" value="{{ tempo }}º Q" readonly style="width: 60px;">
+                            <input type="hidden" id="tempo" name="tempo" value="{{ tempo }}">
+                            <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">Próximo Tempo</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="descida">Descida:</label><br>
+                        {% for i in "1234" %}
+                            <label style="margin-right: 8px;">
+                                <input type="radio" name="descida" value="{{ i }}"> {{ i }}ª
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- LINHA 2: Time atacando X Time defendendo -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="timeAtacando">Time Atacando:</label>
+                        <select name="timeAtacando" id="timeAtacando" onchange="atualizaTimeDefesa()">
+                            <option value="{{ partida.timeCasa.id }}">{{ partida.timeCasa.nomeEquipe }}</option>
+                            <option value="{{ partida.timeVisitante.id }}">{{ partida.timeVisitante.nomeEquipe }}</option>
+                        </select>
+                    </div>
+                    <div class="form-x">X</div>
+                    <div class="form-group">
+                        <label for="timeDefendendo">Time Defendendo:</label>
+                        <input type="text" id="timeDefendendo" name="timeDefendendo" readonly
+                               style="background-color: #eee;">
+                    </div>
+                </div>
+
+                <!-- LINHA 3: Jardas e Posição da Bola -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jardaFirst">Jardas para 1st Down:</label>
+                        {{ form.jardaFirst }}
+                    </div>
+                    <div class="form-group flex-fill">
+                        <label for="posicaoBola">Posição da Bola:</label><br>
+                        <input type="range" min="0" max="120" step="1" name="posicaoBola" id="posicaoBola"
+                               oninput="atualizaSliderValor(this.value)">
+                        <span id="sliderValor">0</span>
+                    </div>
+                </div>
+
+                <!-- LINHA 4: Checkbox + campo extra -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="checkbox" id="ativarRef" onchange="mostrarCampoReferencia()"> Marcar referência de campo
+                    </div>
+                    <div class="form-group" id="campoReferencia" style="display: none;">
+                        <label for="tamanhoCampo">Referência de Campo (opcional):</label>
+                        <input type="number" id="tamanhoCampo" value="120" min="100" max="140" style="width: 60px;"> jardas
+                    </div>
+                </div>
+
+                <!-- BOTÃO -->
+                <div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">
+                    <button type="submit" class="btn btn-primary">Cadastrar Conclusão da Jogada</button>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- TABELA DE JOGADAS -->
+        <div style="flex: 1;">
+            <h4>Jogadas da Partida</h4>
+            <table border="1" width="100%">
+                <thead>
+                    <tr>
+                        <th>Jogada</th>
+                        <th>Tempo</th>
+                        <th>Descida</th>
+                        <th>Atacando</th>
+                        <th>Jardas</th>
+                        <th>Posição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jogada in jogadas %}
+                        <tr>
+                            <td>{{ jogada.jogada }}</td>
+                            <td>{{ jogada.tempo }}</td>
+                            <td>{{ jogada.descida }}</td>
+                            <td>{{ jogada.timeAtacando }}</td>
+                            <td>{{ jogada.jardaFirst }}</td>
+                            <td>{{ jogada.posicaoBola }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6">Nenhuma jogada cadastrada ainda.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- POPUP -->
+    <div id="popupConclusao" style="display:none; position: fixed; top: 10%; left: 20%; width: 60%; padding: 20px; background: white; border: 2px solid #333; z-index: 1000;">
+        <h3>Cadastro da Conclusão da Jogada</h3>
+        <p>(Formulário a ser implementado aqui...)</p>
+        <button onclick="fecharPopupConclusao()">Fechar</button>
+    </div>
+</div>
+
+<script>
+function atualizaTimeDefesa() {
+    const atacante = document.getElementById('timeAtacando').value;
+    const timeCasa = '{{ partida.timeCasa.id }}';
+    const timeVisitante = '{{ partida.timeVisitante.id }}';
+    const defensor = atacante === timeCasa ? '{{ partida.timeVisitante.nomeEquipe }}' : '{{ partida.timeCasa.nomeEquipe }}';
+    document.getElementById('timeDefendendo').value = defensor;
+}
+
+function atualizaSliderValor(valor) {
+    document.getElementById('sliderValor').innerText = valor;
+}
+
+function mostrarCampoReferencia() {
+    const checkbox = document.getElementById('ativarRef');
+    const campo = document.getElementById('campoReferencia');
+    campo.style.display = checkbox.checked ? 'block' : 'none';
+}
+
+function abrirPopupConclusao() {
+    document.getElementById('popupConclusao').style.display = 'block';
+}
+
+function fecharPopupConclusao() {
+    document.getElementById('popupConclusao').style.display = 'none';
+}
+
+let tempoAtual = parseInt(document.getElementById('tempo').value);
+
+function aumentarTempo() {
+    if (tempoAtual < 4) {
+        tempoAtual++;
+        document.getElementById('tempo_visual').value = tempoAtual + 'º Q';
+        document.getElementById('tempo').value = tempoAtual;
+    } else {
+        alert('Tempo máximo atingido (4º Q)');
+    }
+
+}
+
+{% if mostrar_popup %}
+document.getElementById('popupConclusao').style.display = 'block';
+{% endif %}
+</script>
+
 {% endblock content %}
