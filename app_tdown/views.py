@@ -77,20 +77,22 @@ def cadJogada(request, id):
     proxima_jogada = jogadas.count() + 1
     tempo_atual = jogadas.last().tempo if jogadas.exists() else 1
 
-    mostrar_popup = False
-
     if request.method == 'POST':
         form = JogadaForm(request.POST)
         if form.is_valid():
             nova_jogada = form.save(commit=False)
             nova_jogada.partida = partida
             nova_jogada.jogada = proxima_jogada
+            nova_jogada.tempo = int(request.POST.get('tempo'))
+            nova_jogada.descida = int(request.POST.get('descida'))
+            print("tempo:", request.POST.get("tempo"))
+            print("descida:", request.POST.get("descida"))
             nova_jogada.timeDefendendo = (
                 partida.timeVisitante if nova_jogada.timeAtacando == partida.timeCasa
                 else partida.timeCasa
             )
             nova_jogada.save()
-            return redirect(f'/cadastro-jogada/{partida.id}/?popup=1')
+            return redirect('games:conclusaoJogada', jogada_id=nova_jogada.id)
     else:
         form = JogadaForm(initial={
             'partida': partida,
@@ -98,19 +100,25 @@ def cadJogada(request, id):
             'tempo': tempo_atual,
         })
 
-    if request.GET.get('popup') == '1':
-        mostrar_popup = True
-
     return render(request, 'app_tdown/pages/cadJogadas.html', {
         'form': form,
         'partida': partida,
         'jogadas': jogadas,
         'proxima_jogada': proxima_jogada,
         'tempo': tempo_atual,
-        'mostrar_popup': mostrar_popup,
     })
 
 #######################################################################################################################################################
 
 def cadTime(request):
     return HttpResponse('cadTime')  # Cadastro das Times
+
+#######################################################################################################################################################
+#CADASTRO FORMS CONCLUSÃO DA JOGADA
+#######################################################################################################################################################
+def conclusao_jogada(request, jogada_id):
+    jogada = get_object_or_404(Jogada, pk=jogada_id)
+
+    return render(request, 'app_tdown/pages/conclusaoJogada.html', {
+        'jogada': jogada,
+    })

@@ -1,0 +1,16 @@
+{% extends "global/base.html" %}
+{% block title %}Conclusão da Jogada | {% endblock title %}
+
+{% block content %}
+<div class="main-content main-content-detail container">
+    <h2 style="text-align: center;">Conclusão da Jogada</h2>
+
+    <p><strong>Partida:</strong> {{ jogada.partida.nomePartida }}</p>
+    <p><strong>Jogada:</strong> {{ jogada.jogada }} | <strong>Tempo:</strong> {{ jogada.tempo }} | <strong>Descida:</strong> {{ jogada.descida }}</p>
+    <p><strong>Atacando:</strong> {{ jogada.timeAtacando }} | <strong>Defendendo:</strong> {{ jogada.timeDefendendo }}</p>
+    <p><strong>Jardas para 1st Down:</strong> {{ jogada.jardaFirst }} | <strong>Posição da Bola:</strong> {{ jogada.posicaoBola }}</p>
+
+    <hr>
+    <p>Aqui será o formulário de conclusão da jogada.</p>
+</div>
+{% endblock content %}

@@ -33,8 +33,8 @@
                     <div class="form-group">
                         <label for="tempo">Tempo:</label>
                         <div style="display: flex; gap: 5px; align-items: center;">
-                            <input type="text" id="tempo_visual" value="{{ tempo }}º Q" readonly style="width: 60px;">
-                            <input type="hidden" id="tempo" name="tempo" value="{{ tempo }}">
+                            <input type="number" id="tempo" name="tempo" value="{{ tempo }}" readonly style="width: 60px;">
+                            <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">Próximo Tempo</button>
                             <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">Próximo Tempo</button>
                         </div>
                     </div>
@@ -42,9 +42,10 @@
                         <label for="descida">Descida:</label><br>
                         {% for i in "1234" %}
                             <label style="margin-right: 8px;">
-                                <input type="radio" name="descida" value="{{ i }}"> {{ i }}ª
+                                <input type="radio" name="descida" value="{{ i|add:0 }}"> {{ i }}
                             </label>
                         {% endfor %}
+
                     </div>
                 </div>
 
@@ -100,8 +101,8 @@
 
         <!-- TABELA DE JOGADAS -->
         <div style="flex: 1;">
-            <h4>Jogadas da Partida</h4>
-            <table border="1" width="100%">
+            <h4 style="text-align: center;">Jogadas da Partida</h4>
+            <table border="1" width="100%" align="center">
                 <thead>
                     <tr>
                         <th>Jogada</th>
@@ -170,13 +171,12 @@ let tempoAtual = parseInt(document.getElementById('tempo').value);
 function aumentarTempo() {
     if (tempoAtual < 4) {
         tempoAtual++;
-        document.getElementById('tempo_visual').value = tempoAtual + 'º Q';
         document.getElementById('tempo').value = tempoAtual;
     } else {
-        alert('Tempo máximo atingido (4º Q)');
+        alert('Tempo máximo atingido (4)');
     }
-
 }
+
 
 {% if mostrar_popup %}
 document.getElementById('popupConclusao').style.display = 'block';
