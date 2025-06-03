@@ -1,0 +1,51 @@
+{% extends "global/base.html" %}
+{% block title %}Detalhe da Jogada | {% endblock title %}
+
+{% block content %}
+<div class="main-content main-content-detail container">
+    <h1 style="text-align: center;">{{ partida.nomePartida }}</h1>
+    <h3 style="text-align: center;">Dados da Jogada</h3>
+    <p style="text-align: center;">
+        Jogada <b>{{ jogada.jogada }}</b> — <b>{{ jogada.tempo }}º</b> Quarto — <b>{{ jogada.descida }}</b>nd & <b>{{ jogada.jardaFirst }}</b> —
+        <b>{{ jogada.timeAtacando }}</b> — Posição da Bola: <b>{{ jogada.posicaoBola }}</b>
+    </p><br>
+
+    <h4 style="text-align: center;">Conclusão</h4>
+    <p style="text-align: center;">
+        Tipo da Jogada: <b>{{ conclusao.tipoJogada }}</b> —  
+        Possui Falta: <b>{{ conclusao.possuiFalta|yesno:"Sim,Não" }}</b> — 
+        Jogada com Fumble: <b>{{ conclusao.jogPossuiFumble|yesno:"Sim,Não" }}</b>
+        {% if conclusao.jogPossuiFumble %}
+             — Ataque Recuperou: <b>{{ conclusao.timeAtaqueRecuperou|yesno:"Sim,Não" }}</b>
+        {% else %}
+            
+        {% endif %}
+         — Teve Pontuação: <b>{{ conclusao.jogadaComPontuacao|yesno:"Sim,Não" }}</b>
+        {% if conclusao.tipoPontuacao %}
+             — Tipo Pontuação: 
+            <b>{{ conclusao.tipoPontuacao.nomePontuacao }}</b><br>
+        {% else %}
+            <br>
+        {% endif %}
+
+    </p>
+</div>
+{% if conclusao.possuiFalta %}
+    {% include 'app_tdown/partials/faltaCometida.html' %}
+    <!-- Checkbox para ocultar tudo -->
+    <div style="text-align: right;">
+        <label style="font-size: 14px;">
+            <input type="checkbox" onchange="toggleFaltaRegistro(this)"> Não possui mais falta nesta jogada
+        </label>
+    </div>
+{% endif %}
+
+
+<script>
+function toggleFaltaRegistro(checkbox) {
+    const bloco = document.getElementById('blocoFaltas');
+    bloco.style.display = checkbox.checked ? 'none' : 'block';
+}
+</script>
+
+{% endblock content %}

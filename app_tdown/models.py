@@ -108,12 +108,13 @@ class Jogada(models.Model):
     def __str__(self):
         return f"Jogada {self.jogada} - Tempo {self.tempo}"
 
-#########################################################################################################################
-#SEGUE BASE MODEL DA TABELA FALTA
-#########################################################################################################################
+####################################################################################################################################
+# SEGUE BASE MODEL DA TABELA FALTA
+####################################################################################################################################
 class Falta(models.Model):
     nomeFalta = models.CharField(max_length=250)
-    penalidade = models.CharField(max_length=200)
+    penalidade = models.CharField(max_length=500)
+    descFalta = models.CharField(max_length=800)
 
     def __str__(self):
         return self.nomeFalta

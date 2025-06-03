@@ -21,22 +21,18 @@
         <div style="flex: 1;">
             <form method="post">
                 {% csrf_token %}
-                <!-- TÍTULO CENTRALIZADO -->
                 <h3 style="text-align: center;">Cadastro de Jogadas</h3>
                 <br>
                 <!-- LINHA 1: Jogada, Tempo, Descida -->
                 <div class="form-row">
                     <div class="form-group">
                         <label for="jogada">Jogada:</label>
-                        <input type="text" id="jogada" name="jogada" value="{{ proxima_jogada }}" readonly>
+                        <input type="number" id="jogada" name="jogada" value="{{ proxima_jogada }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="tempo">Tempo:</label>
-                        <div style="display: flex; gap: 5px; align-items: center;">
-                            <input type="number" id="tempo" name="tempo" value="{{ tempo }}" readonly style="width: 60px;">
-                            <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">Próximo Tempo</button>
-                            <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">Próximo Tempo</button>
-                        </div>
+                        <input type="number" id="tempo" name="tempo" value="{{ tempo }}" readonly style="width: 60px;">
+                        <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">Próximo Tempo</button>
                     </div>
                     <div class="form-group">
                         <label for="descida">Descida:</label><br>
@@ -45,7 +41,6 @@
                                 <input type="radio" name="descida" value="{{ i|add:0 }}"> {{ i }}
                             </label>
                         {% endfor %}
-
                     </div>
                 </div>
 
@@ -61,8 +56,7 @@
                     <div class="form-x">X</div>
                     <div class="form-group">
                         <label for="timeDefendendo">Time Defendendo:</label>
-                        <input type="text" id="timeDefendendo" name="timeDefendendo" readonly
-                               style="background-color: #eee;">
+                        <input type="text" id="timeDefendendo" name="timeDefendendo" readonly style="background-color: #eee;">
                     </div>
                 </div>
 
@@ -70,24 +64,12 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="jardaFirst">Jardas para 1st Down:</label>
-                        {{ form.jardaFirst }}
+                        <input type="number" id="jardaFirst" name="jardaFirst" required>
                     </div>
                     <div class="form-group flex-fill">
                         <label for="posicaoBola">Posição da Bola:</label><br>
-                        <input type="range" min="0" max="120" step="1" name="posicaoBola" id="posicaoBola"
-                               oninput="atualizaSliderValor(this.value)">
+                        <input type="range" min="0" max="120" step="1" name="posicaoBola" id="posicaoBola" oninput="atualizaSliderValor(this.value)">
                         <span id="sliderValor">0</span>
-                    </div>
-                </div>
-
-                <!-- LINHA 4: Checkbox + campo extra -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <input type="checkbox" id="ativarRef" onchange="mostrarCampoReferencia()"> Marcar referência de campo
-                    </div>
-                    <div class="form-group" id="campoReferencia" style="display: none;">
-                        <label for="tamanhoCampo">Referência de Campo (opcional):</label>
-                        <input type="number" id="tamanhoCampo" value="120" min="100" max="140" style="width: 60px;"> jardas
                     </div>
                 </div>
 
@@ -95,7 +77,6 @@
                 <div style="text-align: center; margin-top: 20px; margin-bottom: 15px;">
                     <button type="submit" class="btn btn-primary">Cadastrar Conclusão da Jogada</button>
                 </div>
-
             </form>
         </div>
 
@@ -152,20 +133,6 @@ function atualizaSliderValor(valor) {
     document.getElementById('sliderValor').innerText = valor;
 }
 
-function mostrarCampoReferencia() {
-    const checkbox = document.getElementById('ativarRef');
-    const campo = document.getElementById('campoReferencia');
-    campo.style.display = checkbox.checked ? 'block' : 'none';
-}
-
-function abrirPopupConclusao() {
-    document.getElementById('popupConclusao').style.display = 'block';
-}
-
-function fecharPopupConclusao() {
-    document.getElementById('popupConclusao').style.display = 'none';
-}
-
 let tempoAtual = parseInt(document.getElementById('tempo').value);
 
 function aumentarTempo() {
@@ -177,10 +144,12 @@ function aumentarTempo() {
     }
 }
 
+function mostrarCampoReferencia() {
+    const checkbox = document.getElementById('ativarRef');
+    const campo = document.getElementById('campoReferencia');
+    campo.style.display = checkbox.checked ? 'block' : 'none';
+}
 
-{% if mostrar_popup %}
-document.getElementById('popupConclusao').style.display = 'block';
-{% endif %}
 </script>
 
 {% endblock content %}

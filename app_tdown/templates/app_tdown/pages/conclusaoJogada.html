@@ -3,14 +3,84 @@
 
 {% block content %}
 <div class="main-content main-content-detail container">
-    <h2 style="text-align: center;">Conclusão da Jogada</h2>
+    <h1 style="text-align: center;">{{ partida.nomePartida }}</h1>
 
-    <p><strong>Partida:</strong> {{ jogada.partida.nomePartida }}</p>
-    <p><strong>Jogada:</strong> {{ jogada.jogada }} | <strong>Tempo:</strong> {{ jogada.tempo }} | <strong>Descida:</strong> {{ jogada.descida }}</p>
-    <p><strong>Atacando:</strong> {{ jogada.timeAtacando }} | <strong>Defendendo:</strong> {{ jogada.timeDefendendo }}</p>
-    <p><strong>Jardas para 1st Down:</strong> {{ jogada.jardaFirst }} | <strong>Posição da Bola:</strong> {{ jogada.posicaoBola }}</p>
+    <h3 style="text-align: center;">Dados da Jogada</h3>
+    <p style="text-align: center;">
+        Jogada <b>{{ jogada.jogada }}</b> — <b>{{ jogada.tempo }}º</b> Quarto — <b>{{ jogada.descida }}</b>nd & <b>{{ jogada.jardaFirst }}</b> —
+        <b>{{ jogada.timeAtacando }}</b> — Posição da Bola: <b>{{ jogada.posicaoBola }}</b>
+    </p>
 
-    <hr>
-    <p>Aqui será o formulário de conclusão da jogada.</p>
+    <h4 style="margin-top: 30px;">Conclusão da Jogada</h4>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- TIPO DA JOGADA EM LINHA -->
+        <div class="form-row" style="display: flex; flex-wrap: wrap; gap: 15px;">
+            <label style="width: 100%;">Tipo da Jogada:</label>
+            {% for tipo in tipos_jogada %}
+                <label>
+                    <input type="radio" name="tipoJogada" value="{{ tipo }}"> {{ tipo }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <br>
+
+        <!-- FALTAS E FUMBLES -->
+        <div class="form-row" style="display: flex; gap: 20px;">
+            <label>
+                <input type="checkbox" name="possuiFalta"> Possui Falta
+            </label>
+            <label>
+                <input type="checkbox" name="jogPossuiFumble" id="jogPossuiFumble" onchange="toggleFumble()"> Possui Fumble
+            </label>
+            <label id="campoRecuperacao" style="display: none;">
+                <input type="checkbox" name="timeAtaqueRecuperou"> Ataque Recuperou a Bola
+            </label>
+        </div>
+
+        <br>
+
+        <!-- PONTUAÇÃO -->
+        <div class="form-row" style="display: flex; gap: 20px;">
+            <label>
+                <input type="checkbox" name="jogadaComPontuacao" id="jogadaComPontuacao" onchange="togglePontuacao()"> Jogada com Pontuação
+            </label>
+
+            <div id="campoPontuacao" style="display: none;">
+                <label for="tipoPontuacao">Tipo de Pontuação:</label>
+                <select name="tipoPontuacao" id="tipoPontuacao">
+                    <option value="">-- Selecione --</option>
+                    {% for pont in pontuacoes %}
+                        <option value="{{ pont.id }}">{{ pont.nomePontuacao }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <br>
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary">Cadastrar Conclusão</button>
+        </div>
+    </form>
 </div>
+
+<script>
+function toggleFumble() {
+    const checkbox = document.getElementById('jogPossuiFumble');
+    const campo = document.getElementById('campoRecuperacao');
+    campo.style.display = checkbox.checked ? 'inline-block' : 'none';
+}
+
+function togglePontuacao() {
+    const checkbox = document.getElementById('jogadaComPontuacao');
+    const campo = document.getElementById('campoPontuacao');
+    if (checkbox.checked) {
+        campo.style.display = 'block';
+    } else {
+        campo.style.display = 'none';
+        document.getElementById('tipoPontuacao').value = '';  // limpa seleção
+    }
+}
+</script>
 {% endblock content %}

@@ -2,7 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.http import HttpResponse
 from utils.games.factory import make_game
-from .models import Partida, Jogada
+from .models import Partida, Jogada, ConclusaoJogada, Pontuacao, FaltaCometida, Falta
 from .forms import PartidaForm, JogadaForm
 # Create your views here.
 
@@ -26,6 +26,7 @@ def liga(request, liga_id):
         'games': partida,
         'title': f'{partida[0].divisoePartida.nomeEDivisao} - Liga'
     })
+
 
 
 
@@ -68,7 +69,7 @@ def viewPartida(request, id):
         'title': f'{partida.nomePartida} - Partida'
     })  # Cadastro de Partida
 
-#######################################################################################################################################################/
+###########################################################################################################################################
 #CADASTRO FORMS CADASTRO JOGADAS
 ###########################################################################################################################################
 def cadJogada(request, id):
@@ -83,15 +84,12 @@ def cadJogada(request, id):
             nova_jogada = form.save(commit=False)
             nova_jogada.partida = partida
             nova_jogada.jogada = proxima_jogada
-            nova_jogada.tempo = int(request.POST.get('tempo'))
-            nova_jogada.descida = int(request.POST.get('descida'))
-            print("tempo:", request.POST.get("tempo"))
-            print("descida:", request.POST.get("descida"))
             nova_jogada.timeDefendendo = (
                 partida.timeVisitante if nova_jogada.timeAtacando == partida.timeCasa
                 else partida.timeCasa
             )
             nova_jogada.save()
+            # 👇 Redireciona para a conclusão
             return redirect('games:conclusaoJogada', jogada_id=nova_jogada.id)
     else:
         form = JogadaForm(initial={
@@ -108,6 +106,7 @@ def cadJogada(request, id):
         'tempo': tempo_atual,
     })
 
+
 #######################################################################################################################################################
 
 def cadTime(request):
@@ -118,7 +117,69 @@ def cadTime(request):
 #######################################################################################################################################################
 def conclusao_jogada(request, jogada_id):
     jogada = get_object_or_404(Jogada, pk=jogada_id)
+    partida = jogada.partida
+    pontuacoes = Pontuacao.objects.all()
+    tipos_jogada = ["Passe", "Corrida", "Punt", "Field Goals", "Kickoff"]  # 👈 MOVA AQUI PRA CIMA
+
+    if request.method == 'POST':
+        tipoJogada = request.POST.get('tipoJogada')
+        possuiFalta = bool(request.POST.get('possuiFalta'))
+        jogPossuiFumble = bool(request.POST.get('jogPossuiFumble'))
+        timeAtaqueRecuperou = bool(request.POST.get('timeAtaqueRecuperou'))
+        jogadaComPontuacao = bool(request.POST.get('jogadaComPontuacao'))
+        tipoPontuacao_id = request.POST.get('tipoPontuacao')
+
+        tipoPontuacao = Pontuacao.objects.get(pk=tipoPontuacao_id) if tipoPontuacao_id else None
+
+        ConclusaoJogada.objects.create(
+            jogada=jogada,
+            tipoJogada=tipoJogada,
+            possuiFalta=possuiFalta,
+            jogPossuiFumble=jogPossuiFumble,
+            timeAtaqueRecuperou=timeAtaqueRecuperou,
+            jogadaComPontuacao=jogadaComPontuacao,
+            tipoPontuacao=tipoPontuacao
+        )
+
+        return redirect('games:detalheJogada', jogada_id=jogada.id)
 
     return render(request, 'app_tdown/pages/conclusaoJogada.html', {
         'jogada': jogada,
+        'partida': partida,
+        'pontuacoes': pontuacoes,
+        'tipos_jogada': tipos_jogada,
+    })
+
+
+
+
+#######################################################################################################################################################
+#CADASTRO FORMS DETALHE JOGADA
+#######################################################################################################################################################
+def detalhe_jogada(request, jogada_id):
+    jogada = get_object_or_404(Jogada, pk=jogada_id)
+    partida = jogada.partida
+    conclusao = ConclusaoJogada.objects.filter(jogada=jogada).last()
+    faltas = FaltaCometida.objects.filter(conclusaoJogada=conclusao)
+    todas_faltas = Falta.objects.all()
+
+    if request.method == 'POST' and 'registrar_falta' in request.POST:
+        tipoFalta_id = request.POST.get('tipoFalta')
+        timeCometeuFalta_id = request.POST.get('timeCometeuFalta')
+        num_jogador = request.POST.get('num_jogadorFezFalta')
+
+        FaltaCometida.objects.create(
+            conclusaoJogada=conclusao,
+            tipoFalta_id=tipoFalta_id,
+            timeCometeuFalta_id=timeCometeuFalta_id,
+            num_jogadorFezFalta=num_jogador
+        )
+        return redirect('games:detalheJogada', jogada_id=jogada.id)
+
+    return render(request, 'app_tdown/pages/detalheJogada.html', {
+        'jogada': jogada,
+        'partida': partida,
+        'conclusao': conclusao,
+        'faltas_cometidas': faltas,
+        'todas_faltas': todas_faltas,
     })

@@ -19,12 +19,4 @@ class PartidaForm(forms.ModelForm):
 class JogadaForm(forms.ModelForm):
     class Meta:
         model = Jogada
-        fields = [
-            'partida',
-            'tempo',
-            'descida',
-            'timeAtacando',
-            'timeDefendendo',
-            'jardaFirst',
-            'posicaoBola',
-        ]
+        fields = ['tempo', 'descida', 'timeAtacando', 'jardaFirst', 'posicaoBola']
