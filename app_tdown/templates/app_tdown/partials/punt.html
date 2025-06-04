@@ -1,0 +1,53 @@
+{% if conclusao.tipoJogada == "Punt" %}
+<div id="blocoPunt" style="margin-top: 40px; padding: 25px; border: 1px solid #ccc; border-radius: 8px; background-color: #fefbe7;">
+    <h4 style="text-align: center;">Registro do Punt</h4>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="registrar_punt" value="1">
+
+        <label>Nº do Kicker:</label>
+        <input type="number" name="n_kicker" required><br><br>
+
+        <label>Resultado do Punt:</label><br>
+        {% for op in resultado_punt_opcoes %}
+            <label><input type="radio" name="resultado_jogada" value="{{ op }}"> {{ op }}</label><br>
+        {% endfor %}
+
+        <label>Posição de Campo:</label>
+        <input type="number" name="posicao_campo" value="{{ jogada.posicaoBola }}" readonly><br><br>
+
+        <label>Jardas do Punt:</label>
+        <input type="number" name="qt_jard_punt" required><br><br>
+
+        <label><input type="checkbox" name="teve_retorno" id="retorno" onchange="toggleRetorno()"> Teve Retorno</label><br>
+
+        <div id="campoRetorno" style="display: none;">
+            <label>Nº do Jogador:</label>
+            <input type="number" name="n_jogadorRetorno"><br>
+
+            <label>Jardas do Retorno:</label>
+            <input type="number" name="qt_jard_retorno"><br><br>
+        </div>
+
+        <label><input type="checkbox" name="def_parou_jogada" id="punt_def" onchange="togglePunt()"> Defesa Parou</label><br><br>
+
+        <div id="campoParouPunt" style="display:none;">
+            <label>Nº do Jogador:</label>
+            <input type="number" name="jogador_parou_jogada"><br><br>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Cadastrar Punt</button>
+    </form>
+</div>
+
+<script>
+function toggleRetorno() {
+    const campo = document.getElementById('campoRetorno');
+    campo.style.display = document.getElementById('retorno').checked ? 'block' : 'none';
+}
+function togglePunt() {
+    const campo = document.getElementById('campoParouPunt');
+    campo.style.display = document.getElementById('punt_def').checked ? 'block' : 'none';
+}
+</script>
+{% endif %}

@@ -1,0 +1,37 @@
+{% if conclusao.tipoJogada == "Field Goals" %}
+<div id="blocoFieldGoal" style="margin-top: 40px; padding: 25px; border: 1px solid #ccc; border-radius: 8px; background-color: #eef4f8;">
+    <h4 style="text-align: center; margin-bottom: 20px;">Registro do Field Goal</h4>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="registrar_fieldgoal" value="1">
+
+        <label>Nº do Kicker:</label>
+        <input type="number" name="n_kicker" required><br><br>
+
+        <label>Resultado da Jogada:</label><br>
+        {% for op in resultado_fielGoal_opcoes %}
+            <label><input type="radio" name="resultado_jogada" value="{{ op }}"> {{ op }}</label><br>
+        {% endfor %}
+
+        <label>Posição de Campo:</label>
+        <input type="number" name="posicao_campo" value="{{ jogada.posicaoBola }}" readonly><br><br>
+
+        <label><input type="checkbox" name="def_parou_jogada" id="fg_def" onchange="toggleFG()"> Defesa Parou</label><br><br>
+
+        <div id="campoParouFG" style="display:none;">
+            <label>Nº do Jogador:</label>
+            <input type="number" name="jogador_parou_jogada"><br><br>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Cadastrar Field Goal</button>
+    </form>
+</div>
+
+<script>
+function toggleFG() {
+    const check = document.getElementById('fg_def');
+    const campo = document.getElementById('campoParouFG');
+    campo.style.display = check.checked ? 'block' : 'none';
+}
+</script>
+{% endif %}

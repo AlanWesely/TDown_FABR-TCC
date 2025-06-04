@@ -1,0 +1,49 @@
+{% if conclusao.tipoJogada == "Passe" %}
+<div id="blocoPasse" style="margin-top: 40px; padding: 25px; border: 1px solid #ccc; border-radius: 8px; background-color: #e8f5e9;">
+    <h4 style="text-align: center;">Registro do Passe</h4>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="registrar_passe" value="1">
+
+        <label>Nº do Quaterback:</label>
+        <input type="number" name="n_quaterback" required><br><br>
+
+        <label>Nº do Recebedor:</label>
+        <input type="number" name="n_recebedor" required><br><br>
+
+        <label>Resultado:</label><br>
+        {% for op in resultado_passe_opcoes %}
+            <label><input type="radio" name="resultado_jogada" value="{{ op }}"> {{ op }}</label><br>
+        {% endfor %}
+
+        <label>Direção do Passe:</label><br>
+        {% for direcao in direcao_passe_opcoes %}
+            <label><input type="radio" name="direcao_passe" value="{{ direcao }}"> {{ direcao }}</label><br>
+        {% endfor %}
+
+        <label>Jardas Percorridas:</label>
+        <input type="number" name="qt_jard_percorreu" min="-120" max="120" required><br><br>
+
+        <label>Profundidade:</label><br>
+        {% for prof in profundidade_passe_opcoes %}
+            <label><input type="radio" name="profundidade_passe" value="{{ prof }}"> {{ prof }}</label><br>
+        {% endfor %}
+
+        <label><input type="checkbox" name="def_parou_jogada" id="passe_def" onchange="togglePasse()"> Defesa Parou</label><br><br>
+
+        <div id="campoParouPasse" style="display:none;">
+            <label>Nº do Jogador:</label>
+            <input type="number" name="jogador_parou_jogada"><br><br>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Cadastrar Passe</button>
+    </form>
+</div>
+
+<script>
+function togglePasse() {
+    const campo = document.getElementById('campoParouPasse');
+    campo.style.display = document.getElementById('passe_def').checked ? 'block' : 'none';
+}
+</script>
+{% endif %}

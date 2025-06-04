@@ -2,7 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.http import HttpResponse
 from utils.games.factory import make_game
-from .models import Partida, Jogada, ConclusaoJogada, Pontuacao, FaltaCometida, Falta, Corrida
+from .models import Partida, Jogada, ConclusaoJogada, Pontuacao, FaltaCometida, Falta, Corrida, FieldGoal, Punt, Passe
 from .forms import PartidaForm, JogadaForm
 # Create your views here.
 
@@ -160,7 +160,7 @@ def detalhe_jogada(request, jogada_id):
     jogada = get_object_or_404(Jogada, pk=jogada_id)
     partida = jogada.partida
     conclusao = ConclusaoJogada.objects.filter(jogada=jogada).last()
-    faltas = FaltaCometida.objects.filter(conclusaoJogada=conclusao)
+    faltas = FaltaCometida.objects.filter(conclusaoJogada__jogada__partida=partida).order_by('conclusaoJogada__jogada__jogada')
     corridas = Corrida.objects.filter(conclusaoJogada=conclusao)
     todas_faltas = Falta.objects.all()
 
@@ -168,6 +168,17 @@ def detalhe_jogada(request, jogada_id):
     resultado_corrida_opcoes = ["Concluida", "Corrida Interrompida", "Fumble"]
     direcao_corrida_opcoes = ["Direita", "Esquerda"]
     gap_corrida_opcoes = ["1", "2", "3", "4", "5", "6", "7"]
+
+    # Opções de campos de passe
+    resultado_passe_opcoes = ["Concluido", "Passe Incompleto", "Interceptado"]
+    direcao_passe_opcoes = ["Direita", "Centro", "Esquerda"]
+    profundidade_passe_opcoes = ["Curto", "Médio", "Longo"]
+
+    # Opção de campos de Punt
+    resultado_punt_opcoes = ["Fair Catch", "Touchback", "Coffin Corner", "Fumble", "Fake Punt"]
+
+    # Opção de campos de Punt
+    resultado_fielGoal_opcoes = ["Chute Convertido", "Chute Bloqueado", "Chute Desviado", "Field Goal Fake"]
 
     if request.method == 'POST':
         if 'registrar_falta' in request.POST:
@@ -202,7 +213,47 @@ def detalhe_jogada(request, jogada_id):
                 qt_jard_percorreu=qt_jard_percorreu,
                 gap_corrida=gap_corrida,
                 def_parou_jogada=def_parou_jogada,
-                jogador_parou_jogada=jogador_parou_jogada,
+                jogador_parou_jogada=jogador_parou_jogada
+            )
+            return redirect('games:cadJogada', id=partida.id)
+
+        elif 'registrar_fieldgoal' in request.POST:
+            FieldGoal.objects.create(
+                conclusaoJogada=conclusao,
+                n_kicker=request.POST.get('n_kicker'),
+                resultado_jogada=request.POST.get('resultado_jogada'),
+                posicao_campo=request.POST.get('posicao_campo'),
+                def_parou_jogada=bool(request.POST.get('def_parou_jogada')),
+                jogador_parou_jogada=request.POST.get('jogador_parou_jogada') or None
+            )
+            return redirect('games:cadJogada', id=partida.id)
+
+        elif 'registrar_punt' in request.POST:
+            Punt.objects.create(
+                conclusaoJogada=conclusao,
+                n_kicker=request.POST.get('n_kicker'),
+                resultado_jogada=request.POST.get('resultado_jogada'),
+                posicao_campo=request.POST.get('posicao_campo'),
+                qt_jard_punt=request.POST.get('qt_jard_punt'),
+                teve_retorno=bool(request.POST.get('teve_retorno')),
+                n_jogadorRetorno=request.POST.get('n_jogadorRetorno') or None,
+                qt_jard_retorno=request.POST.get('qt_jard_retorno') or None,
+                def_parou_jogada=bool(request.POST.get('def_parou_jogada')),
+                jogador_parou_jogada=request.POST.get('jogador_parou_jogada') or None
+            )
+            return redirect('games:cadJogada', id=partida.id)
+
+        elif 'registrar_passe' in request.POST:
+            Passe.objects.create(
+                conclusaoJogada=conclusao,
+                n_quaterback=request.POST.get('n_quaterback'),
+                n_recebedor=request.POST.get('n_recebedor'),
+                resultado_jogada=request.POST.get('resultado_jogada'),
+                direcao_passe=request.POST.get('direcao_passe'),
+                qt_jard_percorreu=request.POST.get('qt_jard_percorreu'),
+                profundidade_passe=request.POST.get('profundidade_passe'),
+                def_parou_jogada=bool(request.POST.get('def_parou_jogada')),
+                jogador_parou_jogada=request.POST.get('jogador_parou_jogada') or None
             )
             return redirect('games:cadJogada', id=partida.id)
 
@@ -216,4 +267,9 @@ def detalhe_jogada(request, jogada_id):
         'resultado_corrida_opcoes': resultado_corrida_opcoes,
         'direcao_corrida_opcoes': direcao_corrida_opcoes,
         'gap_corrida_opcoes': gap_corrida_opcoes,
+        'resultado_passe_opcoes': resultado_passe_opcoes,
+        'direcao_passe_opcoes': direcao_passe_opcoes,
+        'profundidade_passe_opcoes': profundidade_passe_opcoes,
+        'resultado_punt_opcoes' : resultado_punt_opcoes,
+        'resultado_fielGoal_opcoes' : resultado_fielGoal_opcoes,
     })

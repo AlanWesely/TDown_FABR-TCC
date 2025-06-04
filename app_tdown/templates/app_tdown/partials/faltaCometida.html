@@ -51,7 +51,7 @@
                 <tbody>
                     {% for falta in faltas_cometidas %}
                         <tr>
-                            <td style="text-align: center;">{{ jogada.jogada }}</td>
+                            <td style="text-align: center;">{{ falta.conclusaoJogada.jogada.jogada }}</td>
                             <td style="text-align: center;">{{ falta.timeCometeuFalta }}</td>
                             <td style="text-align: center;">{{ falta.num_jogadorFezFalta }}</td>
                             <td>{{ falta.tipoFalta.nomeFalta }}</td>

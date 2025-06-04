@@ -42,6 +42,10 @@
 {% if conclusao.tipoJogada == "Corrida" %}
     {% include 'app_tdown/partials/corrida.html' %}
 {% endif %}
+{% include 'app_tdown/partials/passe.html' %}
+{% include 'app_tdown/partials/punt.html' %}
+{% include 'app_tdown/partials/fieldGoal.html' %}
+
 
 <script>
 function toggleFaltaRegistro(checkbox) {

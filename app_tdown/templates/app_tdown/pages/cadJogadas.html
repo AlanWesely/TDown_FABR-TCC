@@ -18,7 +18,7 @@
 
     <div style="display: flex; gap: 40px; margin-top: 30px;">
         <!-- FORMULÁRIO (50%) -->
-        <div style="flex: 1;">
+        <div style="flex: 0.8;">
             <form method="post">
                 {% csrf_token %}
                 <h3 style="text-align: center;">Cadastro de Jogadas</h3>
@@ -93,6 +93,7 @@
                         <th>Jardas</th>
                         <th>Posição</th>
                         <th>Tipo Jogada</th>
+                        <th>Fumble</th>
                         <th>Pontuação</th>
                     </tr>
                 </thead>
@@ -105,11 +106,12 @@
                             <td>{{ jogada.timeAtacando }}</td>
                             <td>{{ jogada.jardaFirst }}</td>
                             <td>{{ jogada.posicaoBola }}</td>
-                            <td>{{ corrida.conclusaoJogada }}</td>
-                            <td>{{ jogada.posicaoBola }}</td>
+                            <td>{% with jogada.conclusaojogada_set.last as c %}{{ c.tipoJogada|default:"-" }}{% endwith %}</td>
+                            <td>{% with jogada.conclusaojogada_set.last as c %}{{ c.jogPossuiFumble|yesno:"Sim,Não" }}{% endwith %}</td>
+                            <td>{% with jogada.conclusaojogada_set.last as c %}{{ c.tipoPontuacao.nomePontuacao|default:"-" }}{% endwith %}</td>
                         </tr>
                     {% empty %}
-                        <tr><td colspan="6">Nenhuma jogada cadastrada ainda.</td></tr>
+                        <tr><td colspan="9" style="text-align:center;">Nenhuma jogada cadastrada ainda.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
