@@ -39,7 +39,9 @@
         </label>
     </div>
 {% endif %}
-
+{% if conclusao.tipoJogada == "Corrida" %}
+    {% include 'app_tdown/partials/corrida.html' %}
+{% endif %}
 
 <script>
 function toggleFaltaRegistro(checkbox) {

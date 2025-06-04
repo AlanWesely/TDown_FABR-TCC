@@ -2,7 +2,7 @@ from django.http import Http404
 from django.shortcuts import render, get_list_or_404, get_object_or_404, redirect
 from django.http import HttpResponse
 from utils.games.factory import make_game
-from .models import Partida, Jogada, ConclusaoJogada, Pontuacao, FaltaCometida, Falta
+from .models import Partida, Jogada, ConclusaoJogada, Pontuacao, FaltaCometida, Falta, Corrida
 from .forms import PartidaForm, JogadaForm
 # Create your views here.
 
@@ -161,25 +161,59 @@ def detalhe_jogada(request, jogada_id):
     partida = jogada.partida
     conclusao = ConclusaoJogada.objects.filter(jogada=jogada).last()
     faltas = FaltaCometida.objects.filter(conclusaoJogada=conclusao)
+    corridas = Corrida.objects.filter(conclusaoJogada=conclusao)
     todas_faltas = Falta.objects.all()
 
-    if request.method == 'POST' and 'registrar_falta' in request.POST:
-        tipoFalta_id = request.POST.get('tipoFalta')
-        timeCometeuFalta_id = request.POST.get('timeCometeuFalta')
-        num_jogador = request.POST.get('num_jogadorFezFalta')
+    # Opções de campos de corrida
+    resultado_corrida_opcoes = ["Concluida", "Corrida Interrompida", "Fumble"]
+    direcao_corrida_opcoes = ["Direita", "Esquerda"]
+    gap_corrida_opcoes = ["1", "2", "3", "4", "5", "6", "7"]
 
-        FaltaCometida.objects.create(
-            conclusaoJogada=conclusao,
-            tipoFalta_id=tipoFalta_id,
-            timeCometeuFalta_id=timeCometeuFalta_id,
-            num_jogadorFezFalta=num_jogador
-        )
-        return redirect('games:detalheJogada', jogada_id=jogada.id)
+    if request.method == 'POST':
+        if 'registrar_falta' in request.POST:
+            tipoFalta_id = request.POST.get('tipoFalta')
+            timeCometeuFalta_id = request.POST.get('timeCometeuFalta')
+            num_jogador = request.POST.get('num_jogadorFezFalta')
+
+            FaltaCometida.objects.create(
+                conclusaoJogada=conclusao,
+                tipoFalta_id=tipoFalta_id,
+                timeCometeuFalta_id=timeCometeuFalta_id,
+                num_jogadorFezFalta=num_jogador
+            )
+            return redirect('games:detalheJogada', jogada_id=jogada.id)
+
+        elif 'registrar_corrida' in request.POST:
+            n_quaterback = request.POST.get('n_quaterback')
+            n_corredor = request.POST.get('n_corredor')
+            resultado_jogada = request.POST.get('resultado_jogada')
+            direcao_corrida = request.POST.get('direcao_corrida')
+            qt_jard_percorreu = request.POST.get('qt_jard_percorreu')
+            gap_corrida = request.POST.get('gap_corrida')
+            def_parou_jogada = bool(request.POST.get('def_parou_jogada'))
+            jogador_parou_jogada = request.POST.get('jogador_parou_jogada') or None
+
+            Corrida.objects.create(
+                conclusaoJogada=conclusao,
+                n_quaterback=n_quaterback,
+                n_corredor=n_corredor,
+                resultado_jogada=resultado_jogada,
+                direcao_corrida=direcao_corrida,
+                qt_jard_percorreu=qt_jard_percorreu,
+                gap_corrida=gap_corrida,
+                def_parou_jogada=def_parou_jogada,
+                jogador_parou_jogada=jogador_parou_jogada,
+            )
+            return redirect('games:cadJogada', id=partida.id)
 
     return render(request, 'app_tdown/pages/detalheJogada.html', {
         'jogada': jogada,
         'partida': partida,
         'conclusao': conclusao,
         'faltas_cometidas': faltas,
+        'corridas': corridas,
         'todas_faltas': todas_faltas,
+        'resultado_corrida_opcoes': resultado_corrida_opcoes,
+        'direcao_corrida_opcoes': direcao_corrida_opcoes,
+        'gap_corrida_opcoes': gap_corrida_opcoes,
     })

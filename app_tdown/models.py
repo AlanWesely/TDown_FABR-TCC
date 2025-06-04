@@ -169,7 +169,7 @@ class Passe(models.Model):
     qt_jard_percorreu = models.IntegerField()
     profundidade_passe = models.CharField(max_length=50)
     def_parou_jogada = models.BooleanField(default=False)
-    jogador_parou_jogada = models.IntegerField()
+    jogador_parou_jogada = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"Passe do QB {self.n_quaterback}"
@@ -186,7 +186,7 @@ class Corrida(models.Model):
     qt_jard_percorreu = models.IntegerField()
     gap_corrida = models.CharField(max_length=10)
     def_parou_jogada = models.BooleanField(default=False)
-    jogador_parou_jogada = models.IntegerField()
+    jogador_parou_jogada = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"Corrida do jogador {self.n_corredor}"
@@ -201,10 +201,10 @@ class Punt(models.Model):
     posicao_campo = models.IntegerField()
     qt_jard_punt = models.IntegerField()
     teve_retorno = models.BooleanField(default=False)
-    n_jogadorRetorno = models.IntegerField()
-    qt_jard_retorno = models.IntegerField()
+    n_jogadorRetorno = models.IntegerField(null=True, blank=True)
+    qt_jard_retorno = models.IntegerField(null=True, blank=True)
     def_parou_jogada = models.BooleanField(default=False)
-    jogador_parou_jogada = models.IntegerField()
+    jogador_parou_jogada = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"Punt do jogador {self.n_kicker}"
@@ -218,7 +218,7 @@ class FieldGoal(models.Model):
     resultado_jogada = models.CharField(max_length=50)
     posicao_campo = models.IntegerField()
     def_parou_jogada = models.BooleanField(default=False)
-    jogador_parou_jogada = models.IntegerField()
+    jogador_parou_jogada = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"Field Goal do kicker {self.n_kicker}"
