@@ -3,7 +3,9 @@
 {% block title %} {{ title }} | {% endblock title %}
 
 {% block content %}
+
     <div class="main-content main-content-list container">
+        
         {% for game in games %}
             {% include 'app_tdown/partials/games.html' %}
         {% empty %}
