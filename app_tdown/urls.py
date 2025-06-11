@@ -9,7 +9,7 @@ urlpatterns = [
     path('buscar/liga/<int:liga_id>/', views.liga, name="buscar-liga"),
     path('cadastro/partida/', views.cadastrar_partida, name='cadastro_partida'),  # Acessa Cad de Partida
     path('visualizar-partida/<id>/', views.viewPartida, name="viewPartida"),  # Acessa Vis Partida
-    path('cadastro-jogada/<int:id>/', views.cadJogada, name="cadJogada"),    # Acessa Tela Cad de Jogadas
+    path('cadastro-jogada/<int:partida_id>/', views.cadJogada, name="cadJogada"),    # Acessa Tela Cad de Jogadas
     path('cadastro-time/', views.cadTime),  # Acessa a Tela Cadastro de Times
     path('detalhe-jogada/<int:jogada_id>/', views.detalhe_jogada, name='detalheJogada'),
     path('conclusao-jogada/<int:jogada_id>/', views.conclusao_jogada, name='conclusaoJogada')

@@ -10,6 +10,7 @@
     <h1 style="text-align: center;">
         {{ partida.nomePartida }}
     </h1>
+
     <p style="text-align: center;">
         Time da Casa: {{ partida.timeCasa.nomeEquipe }} x Time Visitante: {{ partida.timeVisitante.nomeEquipe }} — 
         Data: {{ partida.dataPartida|date:"d/m/Y" }} às {{ partida.horarioPartida|time:"H:i" }} — 
@@ -21,6 +22,9 @@
         <div style="flex: 0.8;">
             <form method="post">
                 {% csrf_token %}
+                <h2 style="text-align: center;">
+                    {{ partida.timeCasa.nomeAbreviado }} <b>{{ placar.casa }} x {{ placar.visitante }}</b> {{ partida.timeVisitante.nomeAbreviado }}
+                </h2><br>
                 <h3 style="text-align: center;">Cadastro de Jogadas</h3>
                 <br>
                 <!-- LINHA 1: Jogada, Tempo, Descida -->
@@ -32,7 +36,7 @@
                     <div class="form-group">
                         <label for="tempo">Tempo:</label>
                         <input type="number" id="tempo" name="tempo" value="{{ tempo }}" readonly style="width: 60px;">
-                        <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">Próximo Tempo</button>
+                        <button type="button" onclick="aumentarTempo()" class="btn btn-secondary" style="padding: 4px 8px;">+</button>
                     </div>
                     <div class="form-group">
                         <label for="descida">Descida:</label><br>

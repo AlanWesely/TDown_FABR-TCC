@@ -72,12 +72,36 @@ def viewPartida(request, id):
 ###########################################################################################################################################
 #CADASTRO FORMS CADASTRO JOGADAS
 ###########################################################################################################################################
-def cadJogada(request, id):
-    partida = get_object_or_404(Partida, pk=id)
+def cadJogada(request, partida_id):
+    partida = get_object_or_404(Partida, pk=partida_id)
     jogadas = Jogada.objects.filter(partida=partida).order_by('jogada')
     proxima_jogada = jogadas.count() + 1
     tempo_atual = jogadas.last().tempo if jogadas.exists() else 1
 
+    # CALCULAR PLACAR
+    conclusoes = ConclusaoJogada.objects.filter(jogada__partida=partida).select_related('jogada', 'tipoPontuacao')
+    pontuacoes_dict = {
+        'Touchdown': 6,
+        'Field Goal': 3,
+        'Extra Point': 1,
+        'Mini Touchdown': 1,
+        'Safety': 2,
+    }
+    placar = {'casa': 0, 'visitante': 0}
+
+    for conclusao in conclusoes:
+        tipo = conclusao.tipoPontuacao.nomePontuacao if conclusao.tipoPontuacao else None
+        if tipo:
+            pontos = pontuacoes_dict.get(tipo, 0)
+            atacante = conclusao.jogada.timeAtacando
+            if tipo == 'Safety':
+                lado = 'casa' if atacante == partida.timeVisitante else 'visitante'
+            else:
+                lado = 'casa' if atacante == partida.timeCasa else 'visitante'
+            placar[lado] += pontos
+
+
+    # FORMULÁRIO
     if request.method == 'POST':
         form = JogadaForm(request.POST)
         if form.is_valid():
@@ -104,6 +128,7 @@ def cadJogada(request, id):
         'jogadas': jogadas,
         'proxima_jogada': proxima_jogada,
         'tempo': tempo_atual,
+        'placar': placar,
     })
 
 
@@ -215,7 +240,7 @@ def detalhe_jogada(request, jogada_id):
                 def_parou_jogada=def_parou_jogada,
                 jogador_parou_jogada=jogador_parou_jogada
             )
-            return redirect('games:cadJogada', id=partida.id)
+            return redirect('games:cadJogada', partida_id=partida.id)
 
         elif 'registrar_fieldgoal' in request.POST:
             FieldGoal.objects.create(
@@ -226,7 +251,7 @@ def detalhe_jogada(request, jogada_id):
                 def_parou_jogada=bool(request.POST.get('def_parou_jogada')),
                 jogador_parou_jogada=request.POST.get('jogador_parou_jogada') or None
             )
-            return redirect('games:cadJogada', id=partida.id)
+            return redirect('games:cadJogada', partida_id=partida.id)
 
         elif 'registrar_punt' in request.POST:
             Punt.objects.create(
@@ -241,7 +266,7 @@ def detalhe_jogada(request, jogada_id):
                 def_parou_jogada=bool(request.POST.get('def_parou_jogada')),
                 jogador_parou_jogada=request.POST.get('jogador_parou_jogada') or None
             )
-            return redirect('games:cadJogada', id=partida.id)
+            return redirect('games:cadJogada', partida_id=partida.id)
 
         elif 'registrar_passe' in request.POST:
             Passe.objects.create(
@@ -255,7 +280,7 @@ def detalhe_jogada(request, jogada_id):
                 def_parou_jogada=bool(request.POST.get('def_parou_jogada')),
                 jogador_parou_jogada=request.POST.get('jogador_parou_jogada') or None
             )
-            return redirect('games:cadJogada', id=partida.id)
+            return redirect('games:cadJogada', partida_id=partida.id)
 
     return render(request, 'app_tdown/pages/detalheJogada.html', {
         'jogada': jogada,
