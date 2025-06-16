@@ -4,6 +4,8 @@ from django.http import HttpResponse
 from utils.games.factory import make_game
 from .models import Partida, Jogada, ConclusaoJogada, Pontuacao, FaltaCometida, Falta, Corrida, FieldGoal, Punt, Passe
 from .forms import PartidaForm, JogadaForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 # Create your views here.
 
 
@@ -27,8 +29,9 @@ def liga(request, liga_id):
         'title': f'{partida[0].divisoePartida.nomeEDivisao} - Liga'
     })
 
-
-
+def logout_user(request):
+    logout(request)
+    return redirect('games:home')
 
 #def cadPartida(request, id):
 #    return render(request, 'app_tdown/pages/cadPartida.html', context={
@@ -298,3 +301,22 @@ def detalhe_jogada(request, jogada_id):
         'resultado_punt_opcoes' : resultado_punt_opcoes,
         'resultado_fielGoal_opcoes' : resultado_fielGoal_opcoes,
     })
+
+#######################################################################################################################################################
+#CADASTRO FORMS LOGIN USER
+#######################################################################################################################################################
+def login_user(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'Login com sucesso!')
+            return redirect('games:home')  # ou o nome correto da sua view de home
+        else:
+            messages.error(request, 'Usuário ou senha incorretos.')
+
+    return render(request, 'app_tdown/pages/login.html')

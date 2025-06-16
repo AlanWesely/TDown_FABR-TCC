@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        {% include 'app_tdown/partials/head.html' %}
+        <title>{% block title_login %}{% endblock title_login %}Tdown FA BR</title>
+    </head>
+
+    <body>
+
+    <main class="main-content-container">
+        {% block content_login %}{% endblock content_login %}
+    </main>
+
+    {% include 'app_tdown/partials/footer.html' %}
+</body>
+
+</html>

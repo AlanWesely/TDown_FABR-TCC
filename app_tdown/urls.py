@@ -12,5 +12,8 @@ urlpatterns = [
     path('cadastro-jogada/<int:partida_id>/', views.cadJogada, name="cadJogada"),    # Acessa Tela Cad de Jogadas
     path('cadastro-time/', views.cadTime),  # Acessa a Tela Cadastro de Times
     path('detalhe-jogada/<int:jogada_id>/', views.detalhe_jogada, name='detalheJogada'),
-    path('conclusao-jogada/<int:jogada_id>/', views.conclusao_jogada, name='conclusaoJogada')
+    path('conclusao-jogada/<int:jogada_id>/', views.conclusao_jogada, name='conclusaoJogada'),
+    path('logout/', views.logout_user, name='logout_user'),
+    path('login/', views.login_user, name='login_user')
+
 ]
