@@ -14,6 +14,7 @@ urlpatterns = [
     path('detalhe-jogada/<int:jogada_id>/', views.detalhe_jogada, name='detalheJogada'),
     path('conclusao-jogada/<int:jogada_id>/', views.conclusao_jogada, name='conclusaoJogada'),
     path('logout/', views.logout_user, name='logout_user'),
+    path('pagina-privada/', views.pagina_privada, name='pagina_privada'),
     path('login/', views.login_user, name='login_user')
 
 ]

@@ -5,6 +5,7 @@ from utils.games.factory import make_game
 from .models import Partida, Jogada, ConclusaoJogada, Pontuacao, FaltaCometida, Falta, Corrida, FieldGoal, Punt, Passe
 from .forms import PartidaForm, JogadaForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # Create your views here.
 
@@ -13,6 +14,7 @@ def home(request):
     partida = Partida.objects.all().order_by('-id')
     return render(request, 'app_tdown/pages/home.html', context={
         'games': partida,
+        'is_home': True,
         'title': f'Home'
     })
 
@@ -33,6 +35,11 @@ def logout_user(request):
     logout(request)
     return redirect('games:home')
 
+
+@login_required(login_url='games:login_user')  # Redireciona para a tela de login se não estiver logado
+def pagina_privada(request):
+    return render(request, 'app_tdown/pages/pagina_privada.html')
+
 #def cadPartida(request, id):
 #    return render(request, 'app_tdown/pages/cadPartida.html', context={
 #        'game': make_game(),
@@ -41,6 +48,7 @@ def logout_user(request):
 ###########################################################################################################################################
 #CADASTRO FORMS PARTIDA
 ###########################################################################################################################################
+@login_required(login_url='games:login_user')
 def cadastrar_partida(request):
     if request.method == 'POST':
         form = PartidaForm(request.POST, request.FILES)
@@ -69,6 +77,7 @@ def viewPartida(request, id):
     return render(request, 'app_tdown/pages/viewPartida.html', context={
         'game': partida,
         'is_detail_page': True,
+        'is_home': False,
         'title': f'{partida.nomePartida} - Partida'
     })  # Cadastro de Partida
 
@@ -132,17 +141,19 @@ def cadJogada(request, partida_id):
         'proxima_jogada': proxima_jogada,
         'tempo': tempo_atual,
         'placar': placar,
+        'is_home': False,
     })
 
 
 #######################################################################################################################################################
-
+@login_required(login_url='games:login_user')
 def cadTime(request):
     return HttpResponse('cadTime')  # Cadastro das Times
 
 #######################################################################################################################################################
 #CADASTRO FORMS CONCLUSÃO DA JOGADA
 #######################################################################################################################################################
+@login_required(login_url='games:login_user')
 def conclusao_jogada(request, jogada_id):
     jogada = get_object_or_404(Jogada, pk=jogada_id)
     partida = jogada.partida
@@ -176,6 +187,7 @@ def conclusao_jogada(request, jogada_id):
         'partida': partida,
         'pontuacoes': pontuacoes,
         'tipos_jogada': tipos_jogada,
+        'is_home': False,
     })
 
 
@@ -184,6 +196,7 @@ def conclusao_jogada(request, jogada_id):
 #######################################################################################################################################################
 #CADASTRO FORMS DETALHE JOGADA
 #######################################################################################################################################################
+@login_required(login_url='games:login_user')
 def detalhe_jogada(request, jogada_id):
     jogada = get_object_or_404(Jogada, pk=jogada_id)
     partida = jogada.partida
@@ -300,6 +313,7 @@ def detalhe_jogada(request, jogada_id):
         'profundidade_passe_opcoes': profundidade_passe_opcoes,
         'resultado_punt_opcoes' : resultado_punt_opcoes,
         'resultado_fielGoal_opcoes' : resultado_fielGoal_opcoes,
+        'is_home': False,
     })
 
 #######################################################################################################################################################

@@ -1,0 +1,8 @@
+{% extends "global/base.html" %}
+
+{% block title %}Página Privada | {% endblock title %}
+
+{% block content %}
+<h1>Bem-vindo à página privada!</h1>
+<p>Usuário logado: {{ request.user.username }}</p>
+{% endblock content %}
