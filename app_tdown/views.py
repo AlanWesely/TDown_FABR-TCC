@@ -7,11 +7,24 @@ from .forms import PartidaForm, JogadaForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Q
 # Create your views here.
 
 
 def home(request):
+    query = request.GET.get('search', '')
+    # Carrega todas as partidas inicialmente
     partida = Partida.objects.all().order_by('-id')
+
+    if query:
+        partida = partida.filter(
+            Q(nomePartida__icontains=query) |
+            Q(timeCasa__nomeEquipe__icontains=query) |
+            Q(timeVisitante__nomeEquipe__icontains=query) |
+            Q(divisoePartida__nomeEDivisao__icontains=query) |
+            Q(ligaPartida__nomeLiga__icontains=query)
+        ).distinct()
+
     return render(request, 'app_tdown/pages/home.html', context={
         'games': partida,
         'is_home': True,
