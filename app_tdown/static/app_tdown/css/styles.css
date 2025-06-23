@@ -92,27 +92,6 @@ h6 {
     width: 100%;
     align-items: center;  /* Alinha o conteúdo no centro vertical */
   }
-
-  .bloco {
-    padding: 1rem;
-    box-sizing: border-box;
-  }
-
-  .bloco1 {
-    width: 25%;
-    background-color: #f8d7da;
-  }
-
-  .bloco2 {
-    width: 50%;
-    background-color: #d4edda;
-  }
-
-  .bloco3 {
-    width: 25%;
-    background-color: #d1ecf1;
-  }
-
   
 .main-logo {
   font-size: 4rem;
@@ -144,7 +123,7 @@ h6 {
   border: none;
   background: none;
   outline: none;
-  padding: 1.5rem;
+  padding: 1rem;
   transition: all 300ms ease-in-out;
 }
 
@@ -340,8 +319,17 @@ input[type="file"]:focus {
     outline: none;
 }
 
+/* ####################################################################################################### */
 /* Botão */
-button[type="submit"] {
+/* ####################################################################################################### */
+
+/* Estilos compartilhados (opcional) */
+button {
+  cursor: pointer;
+  border: none;
+}
+
+.submit-button {
     background-color: #1d8282;
     color: white;
     padding: 10px 20px;
@@ -351,24 +339,10 @@ button[type="submit"] {
     margin-top: 10px;
 }
 
-button[type="submit"]:hover {
-    background-color: #156666;
+.submit-button:hover {
+  background-color: #156666;
 }
 
-/* Botão */
-button[type="button"] {
-    background-color: #1d8282;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-button[type="button"]:hover {
-    background-color: #156666;
-}
 .form-row {
     display: flex;
     flex-wrap: wrap;
